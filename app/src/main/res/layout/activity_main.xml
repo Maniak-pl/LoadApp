@@ -20,6 +20,65 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".MainActivity"
+        tools:showIn="@layout/activity_main">
 
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@color/colorPrimaryDark"
+            android:padding="16dp"
+            android:src="@drawable/ic_cloud"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/icon">
+
+            <RadioButton
+                android:id="@+id/optionGlide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/option_glide"
+                android:textSize="@dimen/default_text_size" />
+
+            <RadioButton
+                android:id="@+id/optionLoadApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/option_load_app"
+                android:textSize="@dimen/default_text_size" />
+
+            <RadioButton
+                android:id="@+id/optionRetrofit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/option_retrofit"
+                android:textSize="@dimen/default_text_size" />
+        </RadioGroup>
+
+        <com.udacity.LoadingButton
+            android:id="@+id/downloadBtn"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radioGroup" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
