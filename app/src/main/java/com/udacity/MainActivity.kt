@@ -1,20 +1,25 @@
 package com.udacity
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import com.udacity.util.CHANNEL_ID
+import com.udacity.util.CHANNEL_NAME
 import com.udacity.util.Constants.URL_GLIDE
 import com.udacity.util.Constants.URL_RETROFIT
 import com.udacity.util.Constants.URL_UDACITY
+import com.udacity.util.sendNotification
 import com.udacity.util.toast
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -22,10 +27,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var downloadID: Long = 0
+    private var fileName: String = "File"
 
     private lateinit var notificationManager: NotificationManager
-    private lateinit var pendingIntent: PendingIntent
-    private lateinit var action: NotificationCompat.Action
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,10 +44,12 @@ class MainActivity : AppCompatActivity() {
     private fun initListeners() {
         downloadBtn.setOnClickListener {
             when (radioGroup.checkedRadioButtonId) {
-                R.id.optionGlide -> download(URL_GLIDE)
-                R.id.optionLoadApp -> download(URL_UDACITY)
-                R.id.optionRetrofit -> download(URL_RETROFIT)
-                else -> download(null)
+                R.id.optionGlide -> {
+                    download(URL_GLIDE, getString(R.string.name_glide))
+                }
+                R.id.optionLoadApp -> download(URL_UDACITY, getString(R.string.name_load_app))
+                R.id.optionRetrofit -> download(URL_RETROFIT, getString(R.string.name_retrofit))
+                else -> download(null, null)
             }
         }
     }
@@ -66,8 +72,18 @@ class MainActivity : AppCompatActivity() {
                                 cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                             if (status == DownloadManager.STATUS_SUCCESSFUL) {
                                 downloadBtn.setState(ButtonState.Completed)
+                                notificationManager.sendNotification(
+                                    fileName,
+                                    applicationContext,
+                                    "Success"
+                                )
                             } else {
                                 downloadBtn.setState(ButtonState.Completed)
+                                notificationManager.sendNotification(
+                                    fileName,
+                                    applicationContext,
+                                    "Failed"
+                                )
                             }
                         }
                     }
@@ -76,10 +92,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download(url: String?) {
+    private fun download(url: String?, fileName: String?) {
         downloadBtn.setState(ButtonState.Clicked)
         if (url != null) {
             downloadBtn.setState(ButtonState.Loading)
+            this.fileName = fileName.toString()
+            createChannel(CHANNEL_ID, CHANNEL_NAME)
             val request =
                 DownloadManager.Request(Uri.parse(url))
                     .setTitle(getString(R.string.app_name))
@@ -97,8 +115,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        private const val CHANNEL_ID = "channelId"
+    private fun createChannel(channelId: String, channelName: String) {
+        notificationManager = ContextCompat.getSystemService(
+            applicationContext,
+            NotificationManager::class.java
+        ) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel =
+                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationChannel.description = "Download is done!"
+
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 
 }

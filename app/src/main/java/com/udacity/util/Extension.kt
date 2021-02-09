@@ -5,7 +5,7 @@ import android.content.res.Resources
 import android.util.TypedValue
 import android.widget.Toast
 
-inline fun Activity.toast(message: Int): Toast = Toast
+fun Activity.toast(message: Int): Toast = Toast
     .makeText(this, message, Toast.LENGTH_SHORT)
     .apply {
         show()
