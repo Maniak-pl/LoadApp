@@ -18,4 +18,8 @@
     <string name="name_load_app">LoadApp</string>
     <string name="name_retrofit">Retrofit</string>
     <string name="not_choose">Please choose a file to download.</string>
+
+    <string name="ok">OK</string>
+    <string name="file_label">File name:</string>
+    <string name="status_label">Status:</string>
 </resources>

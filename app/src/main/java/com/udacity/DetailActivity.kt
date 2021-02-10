@@ -10,6 +10,12 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
-    }
 
+        okBtn.setOnClickListener {
+            finish()
+        }
+
+        fileValue.text = intent.getStringExtra("fileName").toString()
+        statusValue.text = intent.getStringExtra("status").toString()
+    }
 }
